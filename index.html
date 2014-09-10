@@ -1,7 +1,123 @@
-<h1>prova</h1>
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="msapplication-tap-highlight" content="no" />
+        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.4.3.min.css" />
+        <script type="text/javascript" src="cordova.js"></script>
+        <script src="js/jquery.min.js"></script>
+        <script src="js/jquery.mobile-1.4.3.min.js"></script>
+        
+        <script type="text/javascript">
+
+            document.addEventListener("deviceready", onDeviceReady, false);
+
+            var db;
+
+            function onDeviceReady() {
+                db = window.openDatabase("Database", "1.0", "Prova storage su db", 2*1024*1024);
+                db.transaction(createDB, errorCB, successCB);
+
+
+            }
+
+            function createDB(tx){
+
+                //tx.executeSql('DROP TABLE IF EXISTS BloccoNote');
+                tx.executeSql('CREATE TABLE IF NOT EXISTS BloccoNote (titolo, image, descrizione)');
+
+            }
+
+            function errorCB (err) {
+                alert("errore: " + err.code );
+            }
+
+            function successCB () {
+                alert("tutto bene :) " );
+            }
+
+            function insertDB (tx) {
+                    var _titolo = $('[name="titolo"]').val();
+                    var _image = $('[name="image"]').val();
+                    var _descrizione = $('[name="descrizione"]').val();
+                    var sql = 'INSERT INTO BloccoNote (titolo, image, descrizione) VALUES(?,?,?)';
+                    tx.executeSql(sql, [_titolo,_image,_descrizione], successQueryDB, errorCB);
+
+            }
+
+            function successQueryDB (tx) {
+                alert('record inserito');
+                tx.executeSql('SELECT * FROM BloccoNote', [], stampaElenco, errorCB);
+                alert('record inserito 2');
+            }
+
+            function stampaElenco (tx, results) {
+                var htmlstring ='';
+
+                var len = results.rows.length;
+                alert(len);
+
+                for (var i = 0; i < len; i++) {
+                    htmlstring += '<li>' +
+                        results.rows.item(i).titolo + '</li>' ;
+                }
+                alert(htmlstring);
+                $('#Lista').html(htmlstring);
+                $('#Lista').listview('refresh');
+
+            }
+
+            function inviaModulo () {
+                db.transaction(insertDB, errorCB);
+                $.mobile.changePage("#page2", {reverse: false, transition: "slide"});
+
+                return false;
+            }
+        </script>
+
+        <title>Database</title>
+    </head>
+    <body>
+        <div id="page1" data-role="page">
+            <div data-role="header">
+                <h1>Inserisci nota</h1>
+            </div>
+            <div data-role="content">
+                    <!-- eventualmente puoi bloccare ajax (per il browser) data-ajax="false" -->
+                <form method="post" onsubmit="return inviaModulo()" id="mioForm">
+                    <label for="titolo" class="ui-hidden-accessible">Titolo</label><input type="text" name="titolo" placeholder="titolo" /><br/>
+                    <label for="image" class="ui-hidden-accessible">image</label><input type="text" name="image" placeholder="image" /><br/>
+                    <label for="descrizione" class="ui-hidden-accessible">descrizione</label><input type="text" name="descrizione" placeholder="descrizione" /><br/>
+                    <input type="submit" value="login"/>
+                </form>
+            </div>
+
+            <div data-role="footer">
+            </div>
+
+        </div>
+        <div id="page2" data-role="page">
+            <div data-role="header" data-add-back-btn="true">
+                <h1>elenco note</h1>
+            </div>
+
+            <div data-role="content">
+                    <ul data-role="listview" id="Lista">
+                        <li><a href="#">item1</a></li>
+                        <li><a href="#">item2</a></li>
+                        <li><a href="#">item3</a></li>
+                    </ul>
+
+            </div>
+
+            <div data-role="footer">
+            </div>
+
+        </div>
+
+    </body>
+</html>
