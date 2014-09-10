@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+
+        <meta name="msapplication-tap-highlight" content="no" />
+        <title>Hello World</title>
+        <script type="text/javascript" src="cordova.js"></script>
+
+            <link rel="stylesheet" href="css/index.css" />
+            <link rel="stylesheet" href="css/jquery.mobile-1.4.3.min.css" />
+            <script src="js/jquery-1.11.1.min.js"></script>
+            <script src="js/jquery.mobile-1.4.3.min.js"></script>
+
+
+            <script charset="utf−8" type="text/javascript">
+            function connect()
+            {
+            var term= "";
+            $('#img-baby').hide();
+            $.ajax({
+            url:'http://www.bogliaccino.it/nomi_json.php',
+            type:'POST',
+            data:term,
+            dataType:'json',
+            error:function(jqXHR,text_status,strError){
+            alert('no connection' + jqXHR + text_status + strError);},
+            timeout:60000,
+            success:function(data){
+            $("#result").html("");
+
+            for(var i in data){
+                var nome=data[i]['nome'];
+            $("#result").append("<li><a href='#' onclick=addName('"+nome+"') value='"+nome+"'>"+nome+" Bogliaccino</a></li>");
+            $("#result").listview("refresh");
+            
+            
+            }
+            }
+            });}
+
+            function addName (argument) {
+            $("#result2").append("<li onclick=clear(this)>"+ argument + " Bogliaccino</a></li>");
+            $("#result2").listview("refresh");
+                
+            }
+
+            function clear (argument) {
+                $(this.argument).hide();
+            }
+            </script>
+        <link rel="stylesheet" type="text/css" href="css/index.css" />
+    </head>
+    <body>
+        <div data-role="page" id="home" data-theme="b">
+            <div data-role="header">
+                <h1>Come lo chiami?</h1>
+            </div>
+            <div data-role="content" data-theme="d">
+                <div class="vseparator">
+                    <button onclick="connect()">Ti propongo 10 nomi!</button>
+                </div>
+
+                
+                
+                <div class="vseparator" id="result" data-role="listview" data-theme="c">
+                    <div id="img-baby" style="width:100%;">
+                    <img src="img/baby-md.png"  style="width:100%;margin:auto;"/>
+                    </div>
+                    </div>
+
+
+            </div>
+            <div data-role="footer" data-position="fixed">
+                <div data-role="navbar">
+                    <ul>
+                        <li><a href="#home" data-icon="home" data-role="button">home</a></li>
+                        <li><a href="#home" data-icon="info" data-role="button">info</a></li>
+                        <li><a href="#view" data-icon="star" data-role="button">vedi</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            </div>
+
+            <div data-role="page" id="view">
+                <header data-role="header">
+                    <h1>i nomi favoriti</h1>
+                </header>
+                <article data-role="content">
+
+                <div class="vseparator"  id="result2" data-role="listview" data-theme="a">
+
+                </div>
+                </article>
+            <div data-role="footer" data-position="fixed">
+                <div data-role="navbar">
+                    <ul>
+                        <li><a href="#home" data-icon="home" data-role="button">home</a></li>
+                        <li><a href="#home" data-icon="info" data-role="button">info</a></li>
+                        <li><a href="#view" data-icon="star" data-role="button">vedi</a></li>
+                    </ul>
+                </div>
+            </div>
+            </div>
+
+    </body>
+</html>
